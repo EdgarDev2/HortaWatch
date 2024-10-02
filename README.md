@@ -1,0 +1,72 @@
+<p align="center">
+    <a target="_blank">
+        <img src="https://cdn.pixabay.com/photo/2017/01/16/23/31/icon-1985550_640.png" height="210px" width="210">
+    </a>
+    <h1 align="center">Monitoreo Web en Tiempo Real de Hortalizas</h1>
+    <br>
+</p>
+
+## Descripción del Proyecto
+
+El proyecto "Monitoreo Web en Tiempo Real de Hortalizas" tiene como objetivo monitorear las variables ambientales cruciales para el cultivo de hortalizas, además de proporcionar al cliente un monitor estadístico, gráficos predictivos, gráficos de comparación y más.
+Este sistema permitirá optimizar la producción agrícola mediante el análisis en tiempo real de datos relevantes.
+
+## Institución
+
+**Escuela**: Instituto Tecnológico Superior de Valladolid  
+**Ciudad**: Valladolid, Yucatán.
+
+## Asesor del Proyecto
+
+**Asesor interno**: Dr. Jesús Antonio Santos Tejero.  
+**Asesor Externo**: Dr. Rusell Renan Iuit
+Manzanero.
+
+## Estudiantes Participantes
+
+- Ing. Edgar Poot Ku.
+
+## Tecnologías Utilizadas
+
+- **Lenguajes de programación**: PHP, JS
+- **Frameworks**: YII2
+- **Base de datos**: MySQL
+
+## Requisitos
+
+- Tener Instalado WampServer
+- Tener Instalado Git
+
+## Instalación
+
+1. Iniciar el entorno de desarrollo web WampServer desde la cmd
+   ```bash
+    start C:\wamp64\wampmanager.exe
+   ```
+2. Clonar el repositorio en "C:\wamp64\www":
+   ```bash
+   git clone https://github.com/EdgarDev2/HortaWatch.git
+   ```
+3. Crear la base de datos con MySQL console de WampServer
+   ```sql
+   CREATE DATABASE sistemariego CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   ```
+4. Selecciona la base de datos
+   ```sql
+   USE sistemariego;
+   ```
+5. Importar el script SQL a la base de datos
+   ```sql
+   SOURCE C:/wamp64/www/HortaWatch/frontend/database/databaseScript.sql;
+   ```
+6. salir de la BD y listo
+   ```sql
+   exit
+   ```
+
+## uso
+
+1. Acceder a la aplicación en el navegador
+   ```
+   http://localhost/HortaWatch/frontend/web/
+   ```
