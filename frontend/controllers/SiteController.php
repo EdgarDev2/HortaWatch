@@ -148,6 +148,7 @@ class SiteController extends Controller
 
     /**
      * Signs user up.
+     * Aquí se reciven los datos de la vista para crear un nuevo usuario
      *
      * @return mixed
      */
