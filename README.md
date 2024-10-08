@@ -34,8 +34,9 @@ Manzanero.
 
 ## Requisitos
 
-- Tener Instalado WampServer
-- Tener Instalado Git
+- Tener Instalado [WampServer](https://wampserver.aviatechno.net/).
+- Tener instalado [Composer](https://getcomposer.org/download/).
+- Tener Instalado [Git](https://git-scm.com/downloads/win).
 
 ## Instalación
 
@@ -57,7 +58,7 @@ Manzanero.
    ```
 5. Importar el script SQL a la base de datos
    ```sql
-   SOURCE C:/wamp64/www/HortaWatch/frontend/database/databaseScript.sql;
+   SOURCE C:/wamp64/www/HortaWatch/databaseScript.sql;
    ```
 6. salir de la BD y listo
    ```sql
