@@ -19,10 +19,12 @@ return [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
+            //'authTimeout' => 20, // 20 segundos de inactividad
         ],
         'session' => [
             // this is the name of the session cookie used for login on the frontend
             'name' => 'advanced-frontend',
+            //'timeout' => 20, // 20 segundos de inactividad
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

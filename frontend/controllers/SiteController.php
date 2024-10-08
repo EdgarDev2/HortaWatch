@@ -29,24 +29,29 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'signup', 'tiemporeal', 'graficas', 'predicciones', 'ambientales'], // Acciones a proteger
                 'rules' => [
                     [
                         'actions' => ['signup'],
                         'allow' => true,
-                        'roles' => ['?'],
+                        'roles' => ['?'], // Solo para usuarios no autenticados
                     ],
                     [
                         'actions' => ['logout'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], // Solo para usuarios autenticados
+                    ],
+                    [
+                        'actions' => ['tiemporeal', 'graficas', 'predicciones', 'ambientales'], // Acciones protegidas
+                        'allow' => true,
+                        'roles' => ['@'], // Solo usuarios autenticados
                     ],
                 ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post'],
+                    'logout' => ['post'], // Solo permitir POST para logout
                 ],
             ],
         ];
@@ -85,21 +90,49 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        // Verificar si el usuario ya está autenticado
         if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
+            // Redirigir a la página de Variables Ambientales si el usuario ya ha iniciado sesión
+            return $this->redirect(['/site/ambientales']);
         }
 
+
         $model = new LoginForm();
+        // Cargar datos del formulario y realizar el inicio de sesión
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+            // Redirigir a la página de Variables Ambientales después del inicio de sesión
+            return $this->redirect(['/site/ambientales']);
         }
 
         $model->password = '';
 
+        // Renderizar la vista de inicio de sesión
         return $this->render('login', [
             'model' => $model,
         ]);
     }
+
+    public function actionAmbientales()
+    {
+        // Lógica para la vista de Variables Ambientales
+        return $this->render('ambientales');
+    }
+
+    public function actionTiemporeal()
+    {
+        return $this->render('tiemporeal');
+    }
+
+    public function actionGraficas()
+    {
+        return $this->render('graficas');
+    }
+
+    public function actionPredicciones()
+    {
+        return $this->render('predicciones');
+    }
+
 
     /**
      * Logs out the current user.
@@ -118,6 +151,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
+
     public function actionContact()
     {
         $model = new ContactForm();
