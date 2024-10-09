@@ -48,7 +48,7 @@ AppAsset::register($this);
             $menuItems = [
                 ['label' => 'Acerca de', 'url' => ['/site/about']],
                 ['label' => 'Contacto', 'url' => ['/site/contact']],
-                ['label' => 'Registrar Usuario', 'url' => ['/site/signup']],
+                ['label' => 'Crear cuenta', 'url' => ['/site/signup']],
             ];
         } else {
             // Aquí iría el código para los usuarios autenticados
@@ -68,12 +68,12 @@ AppAsset::register($this);
 
         //bloque para iniciar sesión.
         if (Yii::$app->user->isGuest) {
-            echo Html::tag('div', Html::a('Iniciar sesión', ['/site/login'], ['class' => ['btn btn-outline-light text-decoration-none']]), ['class' => ['d-flex']]);
+            echo Html::tag('div', Html::a('Iniciar sesión', ['/site/login'], ['class' => ['btn btn-success border-0 text-decoration-none']]), ['class' => ['d-flex']]);
         } else {
             echo Html::beginForm(['/site/logout'], 'post', ['class' => 'd-flex'])
                 . Html::submitButton(
-                    'Bienvenido (' . Yii::$app->user->identity->username . ')',
-                    ['class' => 'btn btn-success bg-transparent border-0 text-light text-decoration-none']
+                    'Cerrar sesión (' . Yii::$app->user->identity->username . ')',
+                    ['class' => 'btn btn-success border-0 text-light text-decoration-none']
                 )
                 . Html::endForm();
         }
@@ -91,10 +91,14 @@ AppAsset::register($this);
         </div>
     </main>
 
-    <footer class="footer mt-auto py-3 text-muted">
+    <footer class="footer mt-auto py-2 text-muted">
         <div class="container">
-            <p class="float-start">&copy; <?= Html::encode(Yii::$app->name) ?> <?= date('Y') ?></p>
-            <p class="float-end"><?= Yii::powered() ?></p>
+            <p class="float-start">&copy; <?= Html::img('@web/images/house-fill-dark.svg', ['alt' => Yii::$app->name]) . ' ' . Yii::$app->name ?> <?= date('Y') ?></p>
+            <!--<p class="float-end">?= Yii::powered() ?></p>-->
+            <a class="float-end image btn btn-outline-primary border-0" href="https://www.facebook.com">
+                <img src="/images/facebook_logo_icon.png" alt="Facebook Logo">
+                Seguir en Facebook
+            </a>
         </div>
     </footer>
 
