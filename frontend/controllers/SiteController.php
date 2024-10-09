@@ -73,6 +73,26 @@ class SiteController extends Controller
         ];
     }
 
+    //Método para cerrar sesión automáticamente después de 60 s de inactividad.
+    public function beforeAction($action)
+    {
+        //sólo aplicará el control de inactividad si hay un usuario autenticado
+        if (!Yii::$app->user->isGuest) {
+            $sessionTimeout = 60; // 60 segundos de inactividad
+            $lastActivity = Yii::$app->session->get('lastActivityTime');
+            // Verificar si ha pasado el tiempo de inactividad permitido
+            if (!empty($lastActivity) && (time() - $lastActivity) > $sessionTimeout) {
+                Yii::$app->user->logout();
+                return $this->redirect(Yii::$app->user->loginUrl); // Redirigir al login
+            }
+
+            // Actualizar el tiempo de la última actividad
+            Yii::$app->session->set('lastActivityTime', time());
+        }
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Displays homepage.
      *

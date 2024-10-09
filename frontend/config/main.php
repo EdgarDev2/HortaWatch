@@ -1,4 +1,5 @@
 <?php
+//archivo de configuración para la aplicación
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -13,18 +14,18 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [
-            'csrfParam' => '_csrf-frontend',
+            'csrfParam' => '_csrf-frontend', //protector de solicitudes Cross-Site Request Forgery
         ],
+        //Autentificación del usuario
         'user' => [
-            'identityClass' => 'common\models\User',
-            'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
-            //'authTimeout' => 20, // 20 segundos de inactividad
+            'identityClass' => 'common\models\User', //clase para la identidad del usuario
+            'enableAutoLogin' => true, //permite el inicio de sesión automático
+            'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true], //configuración de la cookie de identidad del usuario.
         ],
+        //comportamiento de las sesiones
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
-            'name' => 'advanced-frontend',
-            //'timeout' => 20, // 20 segundos de inactividad
+            'name' => 'advanced-frontend', //nombre de la cookie de sesión que se utiliza para iniciar sesión de forma automática
+            'timeout' => 60, //cierre de sesión por inactividad (20 segundos)
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
