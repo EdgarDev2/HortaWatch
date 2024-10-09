@@ -25,7 +25,7 @@ return [
         //comportamiento de las sesiones
         'session' => [
             'name' => 'advanced-frontend', //nombre de la cookie de sesión que se utiliza para iniciar sesión de forma automática
-            'timeout' => 60, //cierre de sesión por inactividad (20 segundos)
+            'timeout' => 540, //cierre de sesión por inactividad (9 min <- 540 segundos)
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

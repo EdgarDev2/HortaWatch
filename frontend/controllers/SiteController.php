@@ -78,7 +78,7 @@ class SiteController extends Controller
     {
         //sólo aplicará el control de inactividad si hay un usuario autenticado
         if (!Yii::$app->user->isGuest) {
-            $sessionTimeout = 60; // 60 segundos de inactividad
+            $sessionTimeout = 540; // 540 segundos de inactividad
             $lastActivity = Yii::$app->session->get('lastActivityTime');
             // Verificar si ha pasado el tiempo de inactividad permitido
             if (!empty($lastActivity) && (time() - $lastActivity) > $sessionTimeout) {

@@ -103,7 +103,7 @@ AppAsset::register($this);
 
 <!-- Script para cambiar la vista a login después de 20 s de inactividad -->
 <script>
-    var timeoutInSeconds = 60; // Tiempo de inactividad en segundos
+    var timeoutInSeconds = 540; // Tiempo de inactividad en segundos
     var timeout; // Variable para el temporizador
     var lastActivity; // Variable para registrar la última actividad
 
