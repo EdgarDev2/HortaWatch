@@ -7,35 +7,32 @@
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = 'Iniciar sesión';
+//$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-login">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="display-5"><?= Html::encode($this->title) ?></h1>
 
-    <p>Please fill out the following fields to login:</p>
+    <p class="text-muted">Por favor, rellene los siguientes campos para iniciar sesión:</p>
 
     <div class="row">
-        <div class="col-lg-5">
+        <div class="col-md-6 d-flex flex-column justify-content-center p-3">
             <?php $form = ActiveForm::begin(['id' => 'login-form']); ?>
+            <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+            <?= $form->field($model, 'password')->passwordInput() ?>
+            <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
-                <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
-
-                <?= $form->field($model, 'password')->passwordInput() ?>
-
-                <?= $form->field($model, 'rememberMe')->checkbox() ?>
-
-                <div class="my-1 mx-0" style="color:#999;">
-                    If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
-                    <br>
-                    Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
+            <div class="my-1 mx-0 mt-4 text-muted">
+                Si olvidó su contraseña puede:
+                <?= Html::a('Recuperar contraseña', ['site/request-password-reset'], ['class' => 'btn btn-outline-warning border-0']) ?>
+                <div class="mt4-"></div>
+                ¿Necesita un nuevo correo electrónico de verificación?
+                <?= Html::a(' Reenviar verificación', ['site/resend-verification-email'], ['class' => 'btn btn-outline-primary border-0']) ?>
+                <div class="form-group mt-4">
+                    <?= Html::submitButton('Iniciar sesión', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
                 </div>
+                <?php ActiveForm::end(); ?>
+            </div>
 
-                <div class="form-group">
-                    <?= Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-                </div>
-
-            <?php ActiveForm::end(); ?>
         </div>
     </div>
-</div>
