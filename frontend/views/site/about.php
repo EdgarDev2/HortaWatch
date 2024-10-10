@@ -13,7 +13,7 @@ $this->title = 'About';
             <!-- Imagen que estará arriba en dispositivos móviles -->
             <div class="col-12 col-md-6 d-flex justify-content-center align-items-center order-1 order-md-1">
                 <div class="image position-relative">
-                    <?= Html::img('@web/images/rabano.jpg', ['class' => 'img-fluid rounded', 'alt' => 'Imagen de cilantro, utilizado en el monitoreo de hortalizas.']) ?>
+                    <?= Html::img('@web/images/rabano.jpg', ['class' => 'img-fluid rounded', 'alt' => 'Imagen de rabano, utilizado en acerca de.']) ?>
                 </div>
             </div>
             <!-- Contenedor de texto que estará abajo de la imagen en móviles -->
