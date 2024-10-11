@@ -11,6 +11,10 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use frontend\models\Cama1Automatizado;
+use frontend\models\Cama2Automatizado;
+use frontend\models\Cama3Manual;
+use frontend\models\Cama4Manual;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -145,7 +149,19 @@ class SiteController extends Controller
 
     public function actionGraficas()
     {
-        return $this->render('graficas');
+        // Obtener datos de cada cama
+        $dataCama1 = Cama1Automatizado::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama2 = Cama2Automatizado::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama3 = Cama3Manual::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama4 = Cama4Manual::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+
+        // Pasar los datos a la vista
+        return $this->render('graficas', [
+            'dataCama1' => $dataCama1,
+            'dataCama2' => $dataCama2,
+            'dataCama3' => $dataCama3,
+            'dataCama4' => $dataCama4,
+        ]);
     }
 
     public function actionPredicciones()
