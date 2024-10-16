@@ -6,9 +6,12 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
+use yii\helpers\Security;
 
 /**
+ * Propiedades del modelo
  * User model
  *
  * @property integer $id
@@ -18,16 +21,21 @@ use yii\web\IdentityInterface;
  * @property string $verification_token
  * @property string $email
  * @property string $auth_key
- * @property integer $status
+ * @property integer $rol_id
+ * @property integer $estado_id
+ * @property integer $tipo_usuario_id
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
  */
+/**
+ * Las propiedades de la clase que representa el modelo sólo están listadas en los comentarios de arriba.
+ * Yii2 conoce las propiedades del modelo por los nombres de columna de la tabla user.
+ * No tiene que declararlas, esto aplica porque extiende de ActiveRecord.
+ */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE = 10;
+    const ESTADO_ACTIVO = 1;
 
 
     /**
@@ -35,40 +43,65 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function tableName()
     {
-        return '{{%user}}';
+        return 'user';
     }
 
     /**
-     * {@inheritdoc}
+     * behaviors
+     * se disparará cada vez que un registro sea creado o actualizado
      */
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            'timestamp' => [
+                'class' => 'yii\behaviors\TimestampBehavior',
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+                'value' => new Expression('NOW()'), //le entrega la cadena NOW a mysql que es que es una sintaxis de MySQL para el dataTime actual.
+            ],
         ];
     }
 
     /**
-     * {@inheritdoc}
+     * reglas de validación
+     * el primer valor es el atributo, el segundo el validador es llamado luego parámetros y condiciones
      */
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['estado_id', 'default', 'value' => self::ESTADO_ACTIVO], //automaticamente se establecerá el valor activo
+            ['rol_id', 'default', 'value' => 1],
+            ['tipo_usuario_id', 'default', 'value' => 1],
+            ['username', 'filter', 'filter' => 'trim'],
+            ['username', 'required'],
+            ['username', 'unique'],
+            ['username', 'string', 'min' => 2, 'max' => 255],
+            ['email', 'filter', 'filter' => 'trim'],
+            ['email', 'required'],
+            ['email', 'email'],
+            ['email', 'unique'],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function findIdentity($id)
+    /* Las etiquetas de los atributos de su modelo */
+    public function attributeLabels()
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return [
+            /* Sus otras etiquetas de atributo */];
     }
 
     /**
-     * {@inheritdoc}
+     * @findIdentity
+     */
+    public static function findIdentity($id)
+    {
+        return static::findOne(['id' => $id, 'estado_id' => self::ESTADO_ACTIVO]);
+    }
+
+    /**
+     * @inheritdoc
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
@@ -76,20 +109,19 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds user by username
-     *
-     * @param string $username
+     * Encuentra usuario por username
+     * dividida en dos líneas para evitar ajuste de línea * @param string $username
      * @return static|null
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'estado_id' => self::ESTADO_ACTIVO]);
     }
 
     /**
-     * Finds user by password reset token
+     * Encuentra usuario por clave de restablecimiento de password
      *
-     * @param string $token password reset token
+     * @param string $token clave de restablecimiento de password
      * @return static|null
      */
     public static function findByPasswordResetToken($token)
@@ -100,28 +132,15 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
+            'estado_id' => self::ESTADO_ACTIVO,
         ]);
     }
 
     /**
-     * Finds user by verification email token
+     * Determina si la clave de restablecimiento de password es válida
      *
-     * @param string $token verify email token
-     * @return static|null
-     */
-    public static function findByVerificationToken($token) {
-        return static::findOne([
-            'verification_token' => $token,
-            'status' => self::STATUS_INACTIVE
-        ]);
-    }
-
-    /**
-     * Finds out if password reset token is valid
-     *
-     * @param string $token password reset token
-     * @return bool
+     * @param string $token clave de restablecimiento de password
+     * @return boolean
      */
     public static function isPasswordResetTokenValid($token)
     {
@@ -131,11 +150,13 @@ class User extends ActiveRecord implements IdentityInterface
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        $parts = explode('_', $token);
+        $timestamp = (int) end($parts);
         return $timestamp + $expire >= time();
     }
 
     /**
-     * {@inheritdoc}
+     * @getId
      */
     public function getId()
     {
@@ -143,7 +164,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @getAuthKey
      */
     public function getAuthKey()
     {
@@ -151,7 +172,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @validateAuthKey
      */
     public function validateAuthKey($authKey)
     {
@@ -159,10 +180,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Validates password
+     * Valida password
      *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @param string $password password a validar
+     * @return boolean si la password provista es válida para el usuario actual
      */
     public function validatePassword($password)
     {
@@ -170,7 +191,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates password hash from password and sets it to the model
+     * Genera hash de password a partir de password y la establece en el modelo
      *
      * @param string $password
      */
@@ -180,7 +201,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates "remember me" authentication key
+     * Genera clave de autenticación "recuerdame"
      */
     public function generateAuthKey()
     {
@@ -188,7 +209,8 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Generates new password reset token
+     * Genera nueva clave de restablecimiento de password
+     * dividida en dos líneas para evitar ajuste de línea
      */
     public function generatePasswordResetToken()
     {
@@ -204,7 +226,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Removes password reset token
+     * Remueve clave de restablecimiento de password
      */
     public function removePasswordResetToken()
     {
