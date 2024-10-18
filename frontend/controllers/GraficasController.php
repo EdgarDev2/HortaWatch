@@ -2,6 +2,10 @@
 
 namespace frontend\controllers;
 
+use frontend\models\Cama1;
+use frontend\models\Cama2;
+use frontend\models\Cama3;
+use frontend\models\Cama4;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -37,6 +41,18 @@ class GraficasController extends Controller
     }
     public function actionIndex()
     {
-        return $this->render('index');
+        // Obtener datos de cada cama
+        $dataCama1 = Cama1::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama2 = Cama2::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama3 = Cama3::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+        $dataCama4 = Cama4::find()->select(['humedad', 'fecha', 'hora'])->asArray()->all();
+
+        // Pasar los datos a la vista
+        return $this->render('index', [
+            'dataCama1' => $dataCama1,
+            'dataCama2' => $dataCama2,
+            'dataCama3' => $dataCama3,
+            'dataCama4' => $dataCama4,
+        ]);
     }
 }
