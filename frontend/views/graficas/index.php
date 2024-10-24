@@ -7,7 +7,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
 ?>
 <div class="graficas-index">
     <h1 class="display-6 text-success text-left"><?= Html::encode($this->title) ?></h1>
-    <p class="text-success text-left">Visualización de la humedad del suelo en tiempo real durante los últimos 20 minutos.</p>
+    <p class="text-success text-left"><?= $fechaActual ?>: promedio de Humedad por Hora</p>
     <hr class="border border-success">
 
     <div class="row">
@@ -65,62 +65,54 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
             },
         };
 
-        const dataCama1 = <?= json_encode($dataCama1) ?>;
-        const dataCama2 = <?= json_encode($dataCama2) ?>;
-        const dataCama3 = <?= json_encode($dataCama3) ?>;
-        const dataCama4 = <?= json_encode($dataCama4) ?>;
+        // Recuperar los datos promediados del controlador
+        const resultados = <?= json_encode($resultados) ?>;
 
-        function obtenerDatos(data) {
+        // Función para obtener las horas y los promedios de humedad
+        function obtenerDatos(data, camaIndex) {
             return {
-                fechas: data.map(item => item.hora),
-                humedad: data.map(item => item.humedad)
+                fechas: data.map(item => {
+                    // Formato 24hrs (ej: 14:00, 15:00, ...)
+                    const hora = item.hora; // Obtiene la hora directamente
+                    return `${hora}:00`; // Devuelve la hora en formato "HH:MM"
+                }),
+                humedad: data.map(item => item[`promedio_humedad_cama${camaIndex}`] || 0) // Usamos 0 en lugar de null
             };
         }
 
-        // Datos para cama 1
-        const ultimosDatosCama1 = dataCama1.slice(-20);
+        // Datos para cada cama
         const {
             fechas: fechasCama1,
             humedad: humedadCama1
-        } = obtenerDatos(ultimosDatosCama1);
-        let dataValuesCama1 = [...humedadCama1];
+        } = obtenerDatos(resultados, 1);
 
-        // Datos para cama 2
-        const ultimosDatosCama2 = dataCama2.slice(-20);
         const {
             fechas: fechasCama2,
             humedad: humedadCama2
-        } = obtenerDatos(ultimosDatosCama2);
-        let dataValuesCama2 = [...humedadCama2];
+        } = obtenerDatos(resultados, 2);
 
-        // Datos para cama 3
-        const ultimosDatosCama3 = dataCama3.slice(-20);
         const {
             fechas: fechasCama3,
             humedad: humedadCama3
-        } = obtenerDatos(ultimosDatosCama3);
-        let dataValuesCama3 = [...humedadCama3];
+        } = obtenerDatos(resultados, 3);
 
-        // Datos para cama 4
-        const ultimosDatosCama4 = dataCama4.slice(-20);
         const {
             fechas: fechasCama4,
             humedad: humedadCama4
-        } = obtenerDatos(ultimosDatosCama4);
-        let dataValuesCama4 = [...humedadCama4];
+        } = obtenerDatos(resultados, 4);
 
         // Función para crear la gráfica
         function crearGrafica(ctx, labels, dataValues, label) {
             return new Chart(ctx, {
                 type: 'radar',
                 data: {
-                    labels: labels,
+                    labels: labels, // Las horas
                     datasets: [{
                         label: label,
                         backgroundColor: Utils.randomColor(0.2),
                         borderColor: Utils.randomColor(1),
                         pointBackgroundColor: Utils.randomColor(1),
-                        data: dataValues,
+                        data: dataValues, // Los promedios de humedad
                     }]
                 },
                 options: {
@@ -158,10 +150,10 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.
         }
 
         // Crear las gráficas
-        crearGrafica(document.getElementById('myChart1').getContext('2d'), fechasCama1, dataValuesCama1, 'Ka\'anche\' 1 automatizado');
-        crearGrafica(document.getElementById('myChart2').getContext('2d'), fechasCama2, dataValuesCama2, 'Ka\'anche\' 2 automatizado');
-        crearGrafica(document.getElementById('myChart3').getContext('2d'), fechasCama3, dataValuesCama3, 'Ka\'anche\' 3 manual');
-        crearGrafica(document.getElementById('myChart4').getContext('2d'), fechasCama4, dataValuesCama4, 'Ka\'anche\' 4 manual');
+        crearGrafica(document.getElementById('myChart1').getContext('2d'), fechasCama1, humedadCama1, 'Ka\'anche\' 1 automatizado');
+        crearGrafica(document.getElementById('myChart2').getContext('2d'), fechasCama2, humedadCama2, 'Ka\'anche\' 2 automatizado');
+        crearGrafica(document.getElementById('myChart3').getContext('2d'), fechasCama3, humedadCama3, 'Ka\'anche\' 3 manual');
+        crearGrafica(document.getElementById('myChart4').getContext('2d'), fechasCama4, humedadCama4, 'Ka\'anche\' 4 manual');
 
         // Llamada a la función de descarga para cada gráfica
         descargarGrafica('myChart1', 'downloadChart1', 'grafica_cama1.png');
