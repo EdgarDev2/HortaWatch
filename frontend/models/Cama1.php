@@ -28,13 +28,9 @@ class Cama1 extends ActiveRecord
     {
         return [
             [['humedad'], 'number'],
-            [['fecha', 'hora'], 'safe'], // Asignación masiva sin validación 
+            [['fecha'], 'date', 'format' => 'php:Y-m-d'], // Valida que la fecha sea del formato correcto
+            [['hora'], 'time', 'format' => 'php:H:i:s'], // Valida que la hora sea del formato correcto
         ];
-    }
-
-    public static function className()
-    {
-        return self::class; // Devuelve el nombre de la clase donde se usa 'frontend\models\Cama1Automatizado'
     }
 
     // Etiquetas amigables
